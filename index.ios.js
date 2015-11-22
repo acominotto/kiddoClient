@@ -14,9 +14,11 @@ var statusbar = require('./lib/statusbar')
 var Button = require('react-native-button')
 var { Icon } = require('react-native-icons');
 var TimerMixin = require('react-timer-mixin');
+var {RadioButtons, SegmentedControls} = require('react-native-radio-buttons');
 
 var { TabBarIOS } = require('react-native-icons');
 var TabBarItemIOS = TabBarIOS.Item;
+var CheckBoxItem = require('react-native-item-checkbox')
 
 
 var hours = [[{hour: '07.00 AM', places: 12}, {hour: '07.20 AM', places: 0}, {hour: '07.40 AM', places: 12}],
@@ -125,7 +127,7 @@ var BookingTab = React.createClass({
       return (
         <View style={ styles.container }>
           <View style={ styles.header }>
-            <Text style={ styles.headerText }>Kiddo</Text>
+            <Image style={styles.headerImage} source={require('./logo.png')} />
           </View>
           <View style={styles.content}>
             <View style={styles.overviewBar}>
@@ -181,7 +183,7 @@ var BookingTab = React.createClass({
     return (
       <View style={ styles.container }>
         <View style={ styles.header }>
-          <Text style={ styles.headerText }>Kiddo</Text>
+          <Image style={styles.headerImage} source={require('./logo.png')} />
         </View>
         <View style={styles.content}>
           <View style={styles.overviewBar}>
@@ -240,7 +242,7 @@ var ChildrenTab = React.createClass({
     return (
       <View style={styles.container}>
         <View style={ styles.header }>
-          <Text style={ styles.headerText }>Kiddo</Text>
+          <Image style={styles.headerImage} source={require('./logo.png')} />
         </View>
         <View style={styles.column}>
           <View style={styles.row}>
@@ -290,13 +292,74 @@ var ChildrenTab = React.createClass({
   }
 });
 var SettingsTab = React.createClass({
+  setSelectedOption: function(selectedOption){
+    this.setState({
+      selectedOption
+    });
+  },
+
+  renderOption: function(option, selected, onSelect, index){
+    const style = selected ? { fontWeight: 'bold'} : {}
+
+    return (
+      <TouchableWithoutFeedback onPress={onSelect} key={index}>
+        <Text style={style}>{option}</Text>
+      </TouchableWithoutFeedback>
+    );
+  },
+
+  renderContainer: function(optionNodes){
+    return <View>{optionNodes}</View>;
+  },
+
+  getInitialState: function(){
+    return {
+      selectedOption: '  Classic  '
+    }
+  },
+
   render: function(){
+    const options = [
+    "   Cosy   ",
+    "  Classic  "
+  ];
+
     return (
       <View style={styles.container}>
         <View style={ styles.header }>
-          <Text style={ styles.headerText }>Kiddo</Text>
+          <Image style={styles.headerImage} source={require('./logo.png')} />
         </View>
-        <Image style={styles.doge} source={require('./doge.png')} />
+        <View style={styles.setting}>
+          <View style={styles.column}>
+            <Text style={styles.settingLabel}>Notifications</Text>
+          </View>
+          <View style={styles.column}>
+            <View style={styles.settingValue}>
+              <CheckBoxItem checked={true}/>
+              <Text style={styles.settingValueText}>Departure</Text>
+            </View>
+            <View style={styles.settingValue}>
+              <CheckBoxItem checked={true}/>
+              <Text style={styles.settingValueText}>Arrival</Text>
+            </View>
+            <View style={styles.settingValue}>
+              <CheckBoxItem />
+              <Text style={styles.settingValueText}>Latency</Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.setting}>
+          <View style={styles.column}>
+            <Text style={styles.settingLabel}>Baby Seat</Text>
+          </View>
+          <View style={styles.settingValue}>
+            <SegmentedControls
+              options={ options }
+              onSelection={ this.setSelectedOption.bind(this) }
+              selectedOption={ this.state.selectedOption }
+            />
+          </View>
+        </View>
       </View>
     );
   }
@@ -306,7 +369,7 @@ var TrackingTab = React.createClass({
     return (
       <View style={styles.container}>
         <View style={ styles.header }>
-          <Text style={ styles.headerText }>Kiddo</Text>
+          <Image style={styles.headerImage} source={require('./logo.png')} />
         </View>
         <Image style={styles.logo} source={require('./tracking.png')} />
       </View>
@@ -327,7 +390,7 @@ var NotificationsTab = React.createClass({
     return (
       <View  style={styles.container}>
         <View style={ styles.header }>
-          <Text style={ styles.headerText }>Kiddo</Text>
+          <Image style={styles.headerImage} source={require('./logo.png')} />
         </View>
         <ListView style={styles.notifications} dataSource={this.state.dataSource} renderRow={(rowData) =>
             <View style={styles.notification}>
@@ -463,7 +526,8 @@ var styles = StyleSheet.create({
     height: 50,
     backgroundColor: '#7cdef2',
     paddingTop: 20,
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   headerText: {
     color: '#fff',
@@ -640,7 +704,32 @@ var styles = StyleSheet.create({
   hoursTitle: {
     fontSize: 18,
     fontWeight: 'bold'
-  }
+  },
+  headerImage: {
+    paddingBottom: 10
+  },
+  column: {
+    flex: 1,
+    flexDirection: 'column'
+  },
+  setting: {
+    flexDirection: 'row',
+    padding: 10
+  },
+  settingLabel: {
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  settingValue: {
+    flex: 1,
+    flexDirection: 'row',
+    padding: 10
+  },
+  settingValueText: {
+    fontSize: 20,
+    marginLeft: 10
+  },
+
 
 });
 
